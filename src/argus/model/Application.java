@@ -23,7 +23,7 @@ public class Application {
 
     private static final Logger logger = Logger.getLogger(Application.class.getName());
 
-    // Version info
+    // Version info j
     public static final int MAJOR = 4;
     public static final int MINOR = 0;
     public static final String REVISION = "1 (beta)";
