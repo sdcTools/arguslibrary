@@ -32,38 +32,17 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 //import javax.swing.*;
 //import tauargus.gui.DialogInfo;
 
-
+/**
+ * This is a common ARGUS Class.
+ * It contains several standard system routines.
+ * !!!! ESSENTIAL: logbook and registryRoot must be filled when initializing the program
+ * !!!! via the routines setLogbook and setRegistryRoot
+ * @author ahnl
+ */
 public class SystemUtils {
-    private static String logbook;
+    private static String logbook, registryRoot;
     
  
-//   static FrameInfo windowInfo;
-////    static DialogInfo windowInfo;
-   
-       
-//    private static void eatStream(final InputStream is, final Boolean silent) {
-//        Thread thread;  
-//        thread = new Thread() {
-//            @Override
-//            public void run() {
-//                String line; //Anco
-//// Anco 1.6         
-////         try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-//                BufferedReader reader = null;
-//                try {
-//                    reader = new BufferedReader(new InputStreamReader(is));
-////                    while (reader.readLine() != null) { versie Robert
-////                    }
-//                    while ((line = reader.readLine()) != null) { //Anco
-//                        System.out.println(line); //Anco
-//                        if (!silent) windowInfo.addText(line);
-//                    }
-//                } 
-//                catch (IOException ex) {}
-//            }
-//        };
-//        thread.start();
-//    }
         
     /**
      * Finds the location of a given class file on the file system. Throws an
@@ -123,67 +102,8 @@ public class SystemUtils {
 
         throw new FileNotFoundException(szUrl);
     }
-
-    
-    /**
-     * Start synchronously an external command. Output will be discarded.
-     * 
-     * @param commandString command to be executed.
-     * @param workingDir working directory to be set for the process being called.
-     * @param silent boolean, false: display progress-window, true: do not display progress-window
-     */
-//    public static int execCommand(String commandString, String workingDir, Boolean silent) {
-//
-//        if (!silent){
-//          windowInfo = new FrameInfo();    
-////        windowInfo = new DialogInfo(FrameMain, false);
-//          windowInfo.setVisible(true);
-////        windowInfo.requestFocusInWindow();
-////        windowInfo.setAlwaysOnTop(true);
-//          windowInfo.addLabel ("Run a child program"); 
-//        }
-////        frameInfo.repaint();
-////        frameInfo.validate();
-//
-//        try {
-//            Process process;
-//            
-//            if (workingDir == null) {
-//                process = Runtime.getRuntime().exec(commandString);
-//            } else {
-//                process = Runtime.getRuntime().exec(commandString, null, new File(workingDir));
-//            }
-//            eatStream(process.getInputStream(),silent);
-//            eatStream(process.getErrorStream(),silent);
-//            int exitCode = process.waitFor();
-//            //windowInfo.setVisible(false);
-//            if (exitCode != 0) {
-//                System.out.println("Process terminated with exit code " + exitCode);
-//            } else {
-//                System.out.println("Process terminated succesfully." + exitCode);
-//            }
-//            return exitCode;
-//        } catch (IOException ex) {
-//            //windowInfo.setVisible(false);
-//            System.out.println("Unable to start: " + commandString);
-//        } catch (InterruptedException ex) {
-//            //windowInfo.setVisible(false);
-//            System.out.println("Process is interrupted: " + commandString);
-//        } finally {
-//            if (!silent) windowInfo.setVisible(false);
-//        }
-//        return -99;
-//    }
-    
-//    /**
-//     * Start synchronously an external command. Output will be discarded.
-//     * 
-//     * @param commandString command to be executed.
-//     */
-//    public static int execCommand(String commandString) {
-//        return execCommand(commandString, null, true);
-//    }
-
+   
+ 
     public static String now() {
         final String DATE_FORMAT_NOW = "dd-MMM-yyyy HH:mm:ss";
         Calendar cal = Calendar.getInstance();
@@ -214,6 +134,14 @@ public class SystemUtils {
     public static void setLogbook (String lb){
         logbook = lb;
     }
+    
+    public static void setRegistryRoot (String regRoot){
+      registryRoot = regRoot;  
+      if (!registryRoot.endsWith("/")){
+          registryRoot = registryRoot + "/";
+      }
+    }
+    
     
     public static File[] getFiles(String filePattern) {
         String dirPath = FilenameUtils.getFullPath(filePattern);
@@ -255,6 +183,7 @@ public class SystemUtils {
 //        return decimalFormat;
 //    }
     
+    // Een overdreven routine van Robert. gebruik maar formatDouble in StrUtils.
     public static DecimalFormat getInternalDecimalFormat(int fractionDigits) {
         DecimalFormat decimalFormat = new DecimalFormat();
         DecimalFormatSymbols decimalFormatSymbols = decimalFormat.getDecimalFormatSymbols();
@@ -278,21 +207,21 @@ public class SystemUtils {
         }
     }
     public static void putRegBoolean(String subRoot, String name, Boolean boolKey){
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         p.putBoolean(name, boolKey);
 //        Application.anco = p.getBoolean("anco", false);
     }
     
     public static void removeRegKey(String subRoot, String name){
-       Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+       Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
        p.remove(name);
     }
     
 
     public static boolean getRegBoolean(String subRoot, String name, boolean defaultkey){
         boolean b = defaultkey;
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         b = p.getBoolean(name, b);
 //        Application.anco = p.getBoolean("anco", false);
@@ -300,7 +229,7 @@ public class SystemUtils {
     }
 
       public static void putRegInteger(String subRoot, String name, Integer intKey){
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         p.putInt(name, intKey);
 //        Application.anco = p.getBoolean("anco", false);
@@ -309,7 +238,7 @@ public class SystemUtils {
 
     public static Integer getRegInteger(String subRoot, String name, Integer defaultkey){
         Integer i = defaultkey;
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         i = p.getInt(name, i);
 //        Application.anco = p.getBoolean("anco", false);
@@ -317,7 +246,7 @@ public class SystemUtils {
     }
   
       public static void putRegDouble(String subRoot, String name, Double doubleKey){
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         p.putDouble(name, doubleKey);
 //        Application.anco = p.getBoolean("anco", false);
@@ -326,14 +255,14 @@ public class SystemUtils {
 
     public static Double getRegDouble(String subRoot, String name, Double defaultkey){
         Double d = defaultkey;
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         d = p.getDouble(name, d);
 //        Application.anco = p.getBoolean("anco", false);
         return d;
     }    
       public static void putRegString(String subRoot, String name, String strKey){
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         p.put(name, strKey);
 //        Application.anco = p.getBoolean("anco", false);
@@ -342,7 +271,7 @@ public class SystemUtils {
 
     public static String getRegString(String subRoot, String name, String defaultkey){
         String s = defaultkey;
-        Preferences p = Preferences.userRoot().node("tauargus/"+subRoot);
+        Preferences p = Preferences.userRoot().node(registryRoot+subRoot);
 //        Preferences p = Preferences.userNodeForPackage(Application.class);
         s = p.get(name, s);
 //        Application.anco = p.getBoolean("anco", false);
