@@ -39,6 +39,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  * !!!! via the routines setLogbook and setRegistryRoot
  * @author ahnl
  */
+
 public class SystemUtils {
     private static String logbook, registryRoot;
     
@@ -136,6 +137,10 @@ public class SystemUtils {
     }
     
     public static void setRegistryRoot (String regRoot){
+      // The keys will be placed in a sub-node of HKEY_CURRENT_USER\Software\JavaSoft\Prefs\  
+      // For TAU set the root to tauargus/
+      // For MU  set the root to muargus/  
+      // The backslash will be added if needed.  
       registryRoot = regRoot;  
       if (!registryRoot.endsWith("/")){
           registryRoot = registryRoot + "/";
