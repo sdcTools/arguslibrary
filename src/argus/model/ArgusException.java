@@ -1,5 +1,5 @@
 package argus.model;
-import argus.model.Application;
+//import argus.model.Application;
 import argus.utils.SystemUtils;
 
 public class ArgusException extends Exception {
@@ -13,7 +13,7 @@ public class ArgusException extends Exception {
     public ArgusException(String message, boolean critical) {
         super(message);
         this.critical = critical;
-        if (argus.model.Application.isBatch()) {SystemUtils.writeLogbook(message);
+        if (Application.isBatch()) {SystemUtils.writeLogbook(message);
         }
     }
 
