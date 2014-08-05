@@ -65,8 +65,18 @@ public class SystemUtils {
      * @return a File object
      * @throws IOException
      */
-    public static File getApplicationDirectory() throws IOException, FileNotFoundException {
-        Class c = SystemUtils.class;
+
+/**
+ * The function getApplicationDirectory returns the directory of the application.\n
+ * The parameter is needed, otherwise the directory of the ArgusLib is returned.
+ * 
+ * @param c is the class for which the directory is sought
+ * @return
+ * @throws IOException
+ * @throws FileNotFoundException 
+ */   
+      public static File getApplicationDirectory(Class c) throws IOException, FileNotFoundException {
+//        Class c = SystemUtils.class;
         if (c == null) {
             throw new NullPointerException();
         }
@@ -103,7 +113,6 @@ public class SystemUtils {
 
         throw new FileNotFoundException(szUrl);
     }
-   
  
     public static String now() {
         final String DATE_FORMAT_NOW = "dd-MMM-yyyy HH:mm:ss";
@@ -204,7 +213,7 @@ public class SystemUtils {
     public static void main(String[] args) {
         try {
             // execCommand("c:\\Program Files\\Microsoft Office\\Office14\\WINWORD.EXE c:\\Users\\Gebruiker\\Projects\\TauArgus\\doc\\Install.docx", "c:\\Users\\Gebruiker\\Google Drive\\TauJava");
-            System.out.println(getApplicationDirectory().getCanonicalPath());
+            System.out.println(getApplicationDirectory(SystemUtils.class).getCanonicalPath());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SystemUtils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
