@@ -1,11 +1,10 @@
 package argus.model;
-//import argus.model.Application;
+import argus.model.Application;
 import argus.utils.SystemUtils;
 
 public class ArgusException extends Exception {
     
     private boolean critical;
-    private static boolean toLogbook = false;
 
     public ArgusException(boolean critical) {
         this.critical = critical;
@@ -14,8 +13,7 @@ public class ArgusException extends Exception {
     public ArgusException(String message, boolean critical) {
         super(message);
         this.critical = critical;
-//        if (argus.model.Application.isBatch()) {SystemUtils.writeLogbook(message);
-        if (toLogbook) {SystemUtils.writeLogbook(message);
+        if (argus.model.Application.isBatch()) {SystemUtils.writeLogbook(message);
         }
     }
 
@@ -40,9 +38,5 @@ public class ArgusException extends Exception {
 
     public boolean getCritical() {
         return critical;
-    }
-    
-    public static void setForLogbook(boolean lb){
-        toLogbook = lb;
     }
 }
