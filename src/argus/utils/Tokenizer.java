@@ -121,4 +121,9 @@ public class Tokenizer {
     public int getLineNumber() {
         return lineNumber;
     }
+    
+    public String getValue() {
+        return value;
+    }
+            
 }
