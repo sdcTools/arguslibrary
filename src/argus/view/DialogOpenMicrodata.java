@@ -27,6 +27,16 @@ public class DialogOpenMicrodata extends javax.swing.JDialog {
         setLocationRelativeTo(parent);
     }
     
+    public void setDataFileNames(String dataFileName, String metadataFileName) {
+        textFieldMicrodata.setText(dataFileName);
+        textFieldMetadata.setText(metadataFileName);
+    }
+    
+    public void setDataFieldLabels(String dataFileLabel, String metadataFileLabel) {
+        labelMicrodata.setText(dataFileLabel);
+        labelMetadata.setText(metadataFileLabel);
+    }
+    
     public int showDialog() {
         setVisible(true);
         return returnValue;
