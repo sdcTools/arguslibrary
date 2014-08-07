@@ -13,8 +13,9 @@ public class ArgusException extends Exception {
     public ArgusException(String message, boolean critical) {
         super(message);
         this.critical = critical;
-        if (Application.isBatch()) {SystemUtils.writeLogbook(message);
-        }
+        //if (Application.isBatch()) {
+        SystemUtils.writeLogbook(message);
+        //}
     }
 
     public ArgusException(String message) {
