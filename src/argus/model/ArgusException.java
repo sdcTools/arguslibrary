@@ -5,7 +5,7 @@ import argus.utils.SystemUtils;
 public class ArgusException extends Exception {
     
     private boolean critical;
-    private boolean batchException = false;
+    static private boolean batchException = false;
 
     public ArgusException(boolean critical) {
         this.critical = critical;
@@ -42,7 +42,7 @@ public class ArgusException extends Exception {
         return critical;
     }
     
-    public void setForLogbook(boolean isBatch){
+    static public void setForLogbook(boolean isBatch){
         batchException = isBatch;
     };
     
