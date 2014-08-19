@@ -4,6 +4,7 @@ package argus.utils;
 //import java.text.DecimalFormat;
 //import java.text.DecimalFormatSymbols;
 import argus.model.ArgusException;
+import java.util.Locale;
 
 public class StrUtils {
     public final static String QUOTE = "\"";
@@ -70,6 +71,10 @@ public class StrUtils {
         return (int)Math.round(d);
     }
     
+    public static String formatDouble(double x, int d){
+        return String.format(Locale.US, "%."+d+"f", x);
+    }
+        
     public static String replaceExtension(String fileName, String newExtension) {
         int lastDot = fileName.lastIndexOf(".");
         if (lastDot != -1) {
