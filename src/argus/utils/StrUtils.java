@@ -4,6 +4,7 @@ package argus.utils;
 //import java.text.DecimalFormat;
 //import java.text.DecimalFormatSymbols;
 import argus.model.ArgusException;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class StrUtils {
@@ -40,6 +41,17 @@ public class StrUtils {
             return str.substring(1, length - 1);
         }
         return str;
+    }
+    
+    public static String join(String delimiter, ArrayList<String> list) {
+        StringBuilder b = new StringBuilder(list.get(0));
+        for (int i=1; i < list.size(); i++) {
+            b.append(delimiter);
+            b.append(list.get(i));
+        }
+        return b.toString();
+            
+        
     }
     
     public static String quote(String str) {
