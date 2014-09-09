@@ -62,6 +62,7 @@ public class StrUtils {
         double d;
 
         s = s.trim();
+        s = s.replace(",", ".");
         try {
             d = Double.parseDouble(s);
         } 
