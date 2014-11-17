@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package argus.view;
 
 import java.util.List;
@@ -11,16 +5,18 @@ import javax.swing.table.DefaultTableModel;
 import argus.model.SpssVariable;
 
 /**
+ * View class of the SpssSelectVariables screen.
  *
- * @author pibd05
+ * @author Statistics Netherlands
  */
 public class SpssSelectVariablesView extends javax.swing.JDialog {
 
     private List<SpssVariable> variables;
     private boolean allSelected = false;
-    
+
     /**
      * Creates new form SpssSelectVariablesView
+     *
      * @param parent
      * @param modal
      */
@@ -30,6 +26,12 @@ public class SpssSelectVariablesView extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }
 
+    /**
+     * Shows the variables as defined in the spss data file.
+     *
+     * @param variables List of SpssVariables containing the metadata of the
+     * variables as defined in the spss data file.
+     */
     public void showVariables(List<SpssVariable> variables) {
         this.variables = variables;
         DefaultTableModel tableModel = (DefaultTableModel) this.table.getModel();
@@ -43,6 +45,7 @@ public class SpssSelectVariablesView extends javax.swing.JDialog {
             tableModel.addRow(value);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -135,19 +138,19 @@ public class SpssSelectVariablesView extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        for (int index=0; index < this.table.getModel().getRowCount(); index++) {
-            this.variables.get(index).setSelected((boolean)this.table.getModel().getValueAt(index,0));
+        for (int index = 0; index < this.table.getModel().getRowCount(); index++) {
+            this.variables.get(index).setSelected((boolean) this.table.getModel().getValueAt(index, 0));
         }
-        this.setVisible(false);
+        setVisible(false);
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        this.setVisible(false);
+        setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         this.allSelected = !this.allSelected;
-        for (int i=0; i < this.table.getModel().getRowCount(); i++) {
+        for (int i = 0; i < this.table.getModel().getRowCount(); i++) {
             this.table.getModel().setValueAt(this.allSelected, i, 0);
         }
     }//GEN-LAST:event_selectAllButtonActionPerformed
