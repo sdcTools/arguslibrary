@@ -96,5 +96,21 @@ public class StrUtils {
             return fileName + newExtension;
         }
     }
+    
+        public static String timeToString(int s){
+        String hs = ""; int h=0; int m=0;
+        if (s > 3600){
+           h = s/3600;
+           hs = " " + h+" hrs";
+           s=s-h*3600;
+        }
+        if ((h>0) || (s>=60)){
+           m=s/60; 
+           hs = hs + " " + m + " min"; 
+           s=s-m*60;
+        }
+       hs = hs + " " + s + " sec"; 
+      return hs;  
+    }
   
  }
