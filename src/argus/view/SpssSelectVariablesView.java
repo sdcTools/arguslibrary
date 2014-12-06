@@ -62,6 +62,7 @@ public class SpssSelectVariablesView extends javax.swing.JDialog {
         selectAllButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Select Spss variables");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -77,9 +78,16 @@ public class SpssSelectVariablesView extends javax.swing.JDialog {
             Class[] types = new Class [] {
                 java.lang.Boolean.class, java.lang.String.class
             };
+            boolean[] canEdit = new boolean [] {
+                true, false
+            };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         scrollPane.setViewportView(table);
