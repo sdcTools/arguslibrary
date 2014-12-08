@@ -72,7 +72,7 @@ public class SpssSelectVariablesView extends javax.swing.JDialog {
                 {null, null}
             },
             new String [] {
-                "", "Variable"
+                "Selected", "Variable"
             }
         ) {
             Class[] types = new Class [] {

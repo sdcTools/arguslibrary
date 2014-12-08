@@ -99,8 +99,8 @@ public class DialogOpenMicrodata extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Open Microdata");
+        setMinimumSize(new java.awt.Dimension(600, 150));
         setModal(true);
-        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 DialogClosing(evt);
