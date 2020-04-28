@@ -16,18 +16,8 @@
  */
 package argus.utils;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.regex.Pattern;
-//import tauargus.extern.dataengine.TauArgus;
-//import tauargus.model.Application;
-//import tauargus.model.ArgusException;
-//import tauargus.model.Metadata;
-//import tauargus.model.Variable;
 
 public class TauArgusUtils {
 //    private static TauArgus tauArgus = Application.getTauArgusDll();
