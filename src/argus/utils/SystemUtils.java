@@ -16,17 +16,11 @@
  */
 package argus.utils;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -37,17 +31,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.apache.commons.io.FilenameUtils;
+import java.io.FileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-//import tauargus.gui.DialogOpenMicrodata;
-//import tauargus.gui.FrameInfo;
-//import tauargus.gui.FrameMain;
-//import tauargus.gui.PanelTable;
-//import tauargus.model.Application;
-//import java.awt.*;
-//import java.awt.event.*;
-//import javax.swing.*;
-//import tauargus.gui.DialogInfo;
-
+import java.net.URI;
 /**
  * This is a common ARGUS Class.
  * It contains several standard system routines.
@@ -55,10 +41,9 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
  * !!!! via the routines setLogbook and setRegistryRoot
  * @author ahnl
  */
+
 public class SystemUtils {
     private static String logbook, registryRoot;
-    
- 
         
     /**
      * Finds the location of a given class file on the file system. Throws an
@@ -90,45 +75,106 @@ public class SystemUtils {
  * @throws IOException
  * @throws FileNotFoundException 
  */   
-      public static File getApplicationDirectory(Class c) throws IOException, FileNotFoundException {
-//        Class c = SystemUtils.class;
-        if (c == null) {
-            throw new NullPointerException();
-        }
+    /* NB: Does not work nicely with UNC paths !!! */
+//      public static File getApplicationDirectory(Class c) throws IOException, FileNotFoundException, URISyntaxException {
+//        if (c == null) {
+//            throw new NullPointerException();
+//        }
+//
+//        String className = c.getName();
+//        String resourceName = className.replace('.', '/') + ".class";
+//        ClassLoader classLoader = c.getClassLoader();
+//        if (classLoader == null) {
+//            classLoader = ClassLoader.getSystemClassLoader();
+//        }
+//        URL url = classLoader.getResource(resourceName);
+//
+//        String szUrl = url.toString();
+//        if (szUrl.startsWith("jar:file:")) {
+//            try {
+//                szUrl = szUrl.substring("jar:".length(), szUrl.lastIndexOf("!"));
+//                String path = FilenameUtils.getFullPath(szUrl);
+//                URI uri = new URI(path);
+//                return new File(uri);
+//            } catch (URISyntaxException e) {
+//                throw new IOException(e.toString());
+//            }
+//        } else if (szUrl.startsWith("file:")) {
+//            try {
+//                szUrl = szUrl.substring(0, szUrl.length() - resourceName.length());
+//                URI uri = new URI(szUrl);
+//                File file = new File(uri);
+//                // strip local build path (currently build/classes)
+//                return new File(uri).getParentFile().getParentFile();
+//            } catch (URISyntaxException e) {
+//                throw new IOException(e.toString());
+//            }
+//        }
+//
+//        throw new FileNotFoundException(szUrl);
+//    }
 
-        String className = c.getName();
-        String resourceName = className.replace('.', '/') + ".class";
-        ClassLoader classLoader = c.getClassLoader();
-        if (classLoader == null) {
-            classLoader = ClassLoader.getSystemClassLoader();
+    /**
+    * Ensures the given path string starts with exactly four leading slashes.
+    */
+    private static String ensureUNCPath(String path) {
+	int len = path.length();
+        StringBuffer result = new StringBuffer(len);
+        for (int i = 0; i < 4; i++) {
+	//	if we have hit the first non-slash character, add another leading slash
+            if (i >= len || result.length() > 0 || path.charAt(i) != '/')
+		result.append('/');
         }
-        URL url = classLoader.getResource(resourceName);
-
-        String szUrl = url.toString();
-        if (szUrl.startsWith("jar:file:")) {
-            try {
-                szUrl = szUrl.substring("jar:".length(), szUrl.lastIndexOf("!"));
-                String path = FilenameUtils.getFullPath(szUrl);
-                URI uri = new URI(path);
-                return new File(uri);
-            } catch (URISyntaxException e) {
-                throw new IOException(e.toString());
-            }
-        } else if (szUrl.startsWith("file:")) {
-            try {
-                szUrl = szUrl.substring(0, szUrl.length() - resourceName.length());
-                URI uri = new URI(szUrl);
-                File file = new File(uri);
-                // strip local build path (currently build/classes)
-                return new File(uri).getParentFile().getParentFile();
-            } catch (URISyntaxException e) {
-                throw new IOException(e.toString());
-            }
-        }
-
-        throw new FileNotFoundException(szUrl);
+	result.append(path);
+	return result.toString();
     }
- 
+    
+    /**
+    * Returns the URL as a URI. This method will handle URLs that are
+    * not properly encoded (for example they contain unencoded space characters).
+    * 
+    * @param url The URL to convert into a URI
+    * @return A URI representing the given URL
+    * @throws URISyntaxException
+    */
+    public static URI toURI(URL url) throws URISyntaxException {
+    //URL behaves differently across platforms so for file: URLs we parse from string form
+        if ("file".equals(url.getProtocol())) {
+            String pathString = url.toExternalForm().substring(5);
+            //ensure there is a leading slash to handle common malformed URLs such as file:c:/tmp
+            if (pathString.indexOf('/') != 0)
+                pathString = '/' + pathString;
+            else if (pathString.startsWith("//") && !pathString.startsWith("//", 2)) {
+            //URL encodes UNC path with two slashes, but URI uses four (see bug 207103)
+                pathString = ensureUNCPath(pathString);
+            }
+            return new URI("file", null, pathString, null);
+        }
+        try {
+            return new URI(url.toExternalForm());
+        } catch (URISyntaxException e) {
+        //try multi-argument URI constructor to perform encoding
+            return new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+        }
+    }    
+    /* 
+    *  NB: This version seems to work properly with UNC paths AND non-UNC paths
+    *  NB: Only tested on Windows machine, not on Linux machine
+    */
+    public static File getApplicationDirectory(Class c) throws IOException, FileNotFoundException, URISyntaxException {
+        if (c==null) throw new NullPointerException();
+        try{
+            URL u = c.getProtectionDomain().getCodeSource().getLocation();            
+            File f = new File(toURI(u).getSchemeSpecificPart());
+            if ("file".equals(u.getProtocol()))
+                return f.getParentFile();
+            else
+                return f;
+        }catch (URISyntaxException ex){
+            throw new IOException(ex.toString());
+        }
+    }    
+    
     public static String now() {
         final String DATE_FORMAT_NOW = "dd-MMM-yyyy HH:mm:ss";
         Calendar cal = Calendar.getInstance();
@@ -223,11 +269,12 @@ public class SystemUtils {
     
     public static void main(String[] args) {
         try {
-            // execCommand("c:\\Program Files\\Microsoft Office\\Office14\\WINWORD.EXE c:\\Users\\Gebruiker\\Projects\\TauArgus\\doc\\Install.docx", "c:\\Users\\Gebruiker\\Google Drive\\TauJava");
             System.out.println(getApplicationDirectory(SystemUtils.class).getCanonicalPath());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(SystemUtils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
+            Logger.getLogger(SystemUtils.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (URISyntaxException ex){
             Logger.getLogger(SystemUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -16,16 +16,9 @@
  */
 package argus.model;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.SplashScreen;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Locale;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
 import org.apache.commons.io.FilenameUtils;
 //import tauargus.extern.dataengine.TauArgus;
 //import tauargus.extern.tauhitas.HiTaSCtrl;

@@ -874,88 +874,88 @@ public class Metadata implements Cloneable {
         }
     }
     
-    public void setVariableLengthFromData(final PropertyChangeSupport propertyChangeSupport) throws ArgusException, IOException, FileNotFoundException { 
-        logger.info("Start reading data from file: " + dataFile);
-        propertyChangeSupport.firePropertyChange("activityMain", null, "Determining length of variables from data file " + dataFile);
-
-        for (Variable variable : variables) {
-            variable.varLen = 0;
-        }
-
-        File[] files = SystemUtils.getFiles(dataFile);
-
-        for (int i = 0; i < files.length; i++) {
-            File file = files[i];
-// Anco 1.6 try with resources
-//            try (
-//               BufferedReader reader = new BufferedReader(new FileReader(file))
-//            ) {
-            BufferedReader reader = null;
-            try {reader = new BufferedReader(new FileReader(file));
-                long fileLength = file.length();
-                long bytesRead = 0;
-                String line;
-                int lineNumber = 0;
-                while ((line = reader.readLine()) != null) {
-                    lineNumber++;
-                    bytesRead = bytesRead + line.length() + 1;
-                    updateProgress(bytesRead, fileLength, lineNumber, propertyChangeSupport);
-                    line = line.trim();
-                    if (StringUtils.isNotEmpty(line)) {
-                        if (!line.contains(fieldSeparator)) {
-                             throw new ArgusException("Separator:" + fieldSeparator + " not found in table file");
-                        }
-
-                        String[] values = line.split(fieldSeparator);
-                        for (int j = 0; j < values.length; j++) {
-                            if (j < variables.size()) {
-                                Variable variable = variables.get(j);
-                                if (!(variable.isCategorical() && variable.hierarchical == Variable.HIER_FILE)){
-                                    String value = StrUtils.unQuote(values[j].trim());
-                                    if (!value.equals(variable.totCode)) {
-                                        if (value.length() > variable.varLen) {
-                                            variable.varLen = value.length();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            finally {reader.close();}
-        }
-
-        for (Variable variable : variables) {
-            if (variable.isCategorical() && variable.hierarchical==Variable.HIER_FILE) {
-                // Bij hierfile de lengte halen uit de hier-file
-// Anco 1.6, try with resources
-//                try (
-//                    BufferedReader reader = new BufferedReader(new FileReader(getFilePath(variable.hierFileName)))
-//                ) {
-                BufferedReader reader = null;
-                try {reader = new BufferedReader(new FileReader(getFilePath(variable.hierFileName)));
-                    int length = variable.leadingString.length();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        while (line.startsWith(variable.leadingString)) {
-                            line = line.substring(length);
-                        }
-                        line = StringUtils.stripEnd(line, " \t");
-                        if (line.length() > variable.varLen) {
-                            variable.varLen = line.length();
-                        }
-                        if (line.equals(variable.totCode)) {
-                            throw new ArgusException("Totalcode: " + line + " found in hierarchy file.\nRemove total code form hierarchy.\nTotal is added implicitly");
-                        }
-                    }
-                }
-                catch (FileNotFoundException ex) {
-                    throw new ArgusException("File with hierarchical information: " + variable.hierFileName + " could not be found");
-                }
-            }
-        }
-    }
+//    public void setVariableLengthFromData(final PropertyChangeSupport propertyChangeSupport) throws ArgusException, IOException, FileNotFoundException { 
+//        logger.info("Start reading data from file: " + dataFile);
+//        propertyChangeSupport.firePropertyChange("activityMain", null, "Determining length of variables from data file " + dataFile);
+//
+//        for (Variable variable : variables) {
+//            variable.varLen = 0;
+//        }
+//
+//        File[] files = SystemUtils.getFiles(dataFile);
+//
+//        for (int i = 0; i < files.length; i++) {
+//            File file = files[i];
+//// Anco 1.6 try with resources
+////            try (
+////               BufferedReader reader = new BufferedReader(new FileReader(file))
+////            ) {
+//            BufferedReader reader = null;
+//            try {reader = new BufferedReader(new FileReader(file));
+//                long fileLength = file.length();
+//                long bytesRead = 0;
+//                String line;
+//                int lineNumber = 0;
+//                while ((line = reader.readLine()) != null) {
+//                    lineNumber++;
+//                    bytesRead = bytesRead + line.length() + 1;
+//                    updateProgress(bytesRead, fileLength, lineNumber, propertyChangeSupport);
+//                    line = line.trim();
+//                    if (StringUtils.isNotEmpty(line)) {
+//                        if (!line.contains(fieldSeparator)) {
+//                             throw new ArgusException("Separator:" + fieldSeparator + " not found in table file");
+//                        }
+//
+//                        String[] values = line.split(fieldSeparator);
+//                        for (int j = 0; j < values.length; j++) {
+//                            if (j < variables.size()) {
+//                                Variable variable = variables.get(j);
+//                                if (!(variable.isCategorical() && variable.hierarchical == Variable.HIER_FILE)){
+//                                    String value = StrUtils.unQuote(values[j].trim());
+//                                    if (!value.equals(variable.totCode)) {
+//                                        if (value.length() > variable.varLen) {
+//                                            variable.varLen = value.length();
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//            finally {reader.close();}
+//        }
+//
+//        for (Variable variable : variables) {
+//            if (variable.isCategorical() && variable.hierarchical==Variable.HIER_FILE) {
+//                // Bij hierfile de lengte halen uit de hier-file
+//// Anco 1.6, try with resources
+////                try (
+////                    BufferedReader reader = new BufferedReader(new FileReader(getFilePath(variable.hierFileName)))
+////                ) {
+//                BufferedReader reader = null;
+//                try {reader = new BufferedReader(new FileReader(getFilePath(variable.hierFileName)));
+//                    int length = variable.leadingString.length();
+//                    String line;
+//                    while ((line = reader.readLine()) != null) {
+//                        while (line.startsWith(variable.leadingString)) {
+//                            line = line.substring(length);
+//                        }
+//                        line = StringUtils.stripEnd(line, " \t");
+//                        if (line.length() > variable.varLen) {
+//                            variable.varLen = line.length();
+//                        }
+//                        if (line.equals(variable.totCode)) {
+//                            throw new ArgusException("Totalcode: " + line + " found in hierarchy file.\nRemove total code form hierarchy.\nTotal is added implicitly");
+//                        }
+//                    }
+//                }
+//                catch (FileNotFoundException ex) {
+//                    throw new ArgusException("File with hierarchical information: " + variable.hierFileName + " could not be found");
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public int hashCode() {
