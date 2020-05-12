@@ -167,7 +167,7 @@ public class SystemUtils {
             URL u = c.getProtectionDomain().getCodeSource().getLocation();            
             File f = new File(toURI(u).getSchemeSpecificPart());
             if ("file".equals(u.getProtocol()))
-                return f.getParentFile();
+                return f.getParentFile().getParentFile(); // strip local build path (currently build/classes)
             else
                 return f;
         }catch (URISyntaxException ex){
