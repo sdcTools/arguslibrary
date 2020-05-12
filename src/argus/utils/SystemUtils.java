@@ -153,7 +153,7 @@ public class SystemUtils {
         try {
             return new URI(url.toExternalForm());
         } catch (URISyntaxException e) {
-        //try multi-argument URI constructor to perform encoding
+            //try multi-argument URI constructor to perform encoding
             return new URI(url.getProtocol(), url.getUserInfo(), url.getHost(), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
         }
     }    
@@ -163,11 +163,12 @@ public class SystemUtils {
     */
     public static File getApplicationDirectory(Class c) throws IOException, FileNotFoundException, URISyntaxException {
         if (c==null) throw new NullPointerException();
-        try{
-            URL u = c.getProtectionDomain().getCodeSource().getLocation();            
+         try{
+            URL u = c.getProtectionDomain().getCodeSource().getLocation();
             File f = new File(toURI(u).getSchemeSpecificPart());
-            if ("file".equals(u.getProtocol()))
-                return f.getParentFile().getParentFile(); // strip local build path (currently build/classes)
+            f = f.getParentFile();
+            if (f.toString().endsWith("\\build")) // needed to work in netbeans IDE under Windows
+                return f.getParentFile();
             else
                 return f;
         }catch (URISyntaxException ex){
