@@ -34,6 +34,7 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.FileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import java.net.URI;
+import java.net.URLDecoder;
 /**
  * This is a common ARGUS Class.
  * It contains several standard system routines.
@@ -165,7 +166,7 @@ public class SystemUtils {
         if (c==null) throw new NullPointerException();
          try{
             URL u = c.getProtectionDomain().getCodeSource().getLocation();
-            File f = new File(toURI(u).getSchemeSpecificPart());
+            File f = new File(URLDecoder.decode(toURI(u).getSchemeSpecificPart(),"UTF-8")); //A.o. replaces %20 by " "
             f = f.getParentFile();
             if (f.toString().endsWith("\\build")) // needed to work in netbeans IDE under Windows
                 return f.getParentFile();
